@@ -169,9 +169,11 @@ def update_pieces(state, adj_locs, player):
     opponent = 1 - player
     killed_groups = []
 
+    #  计算所有棋子和空位
     all_pieces = np.sum(state[[govars.BLACK, govars.WHITE]], axis=0)
     empties = 1 - all_pieces
 
+    # 标记对手的棋子组
     all_opp_groups, _ = ndimage.measurements.label(state[opponent])
 
     # Go through opponent groups
@@ -180,6 +182,7 @@ def update_pieces(state, adj_locs, player):
     for opp_group_idx in all_adj_labels[np.nonzero(all_adj_labels)]:
         opp_group = all_opp_groups == opp_group_idx
         liberties = empties * ndimage.binary_dilation(opp_group)
+        # 如果棋子组没有气了 就杀死
         if np.sum(liberties) <= 0:
             # Killed group
             opp_group_locs = np.argwhere(opp_group)
@@ -226,7 +229,9 @@ def adj_data(state, action2d, player):
     valid = np.prod(valid, axis=1)
     neighbors = neighbors[np.nonzero(valid)]
 
+    # 获取对手的棋盘情况
     opp_pieces = state[1 - player]
+    # 用于检测棋子是否被对手棋子包围
     surrounded = (opp_pieces[neighbors[:, 0], neighbors[:, 1]] > 0).all()
 
     return neighbors, surrounded

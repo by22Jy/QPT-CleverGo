@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-# @Time    : 2021/10/1 0:28
-# @Author  : He Ruizhi
-# @File    : game_engine.py
-# @Software: PyCharm
-
 import pygame
 import sys
 import copy
@@ -37,6 +31,7 @@ pygame.display.set_caption('机巧围棋(CleverGo)')
 # 启动界面绘制启动信息
 loading_font = pygame.font.Font('assets/fonts/msyh.ttc', 72)
 loading_text_render = loading_font.render('正在加载...', True, WHITE)
+# 将加载过程中的提示文字放入到启动界面的中央
 SCREEN.blit(loading_text_render, ((SCREEN.get_width() - loading_text_render.get_width()) / 2,
                                   (SCREEN.get_height() - loading_text_render.get_height()) / 2))
 pygame.display.update()

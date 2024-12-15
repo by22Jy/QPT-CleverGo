@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-# @Time    : 2021/3/20 10:51
-# @Author  : He Ruizhi
-# @File    : player.py
-# @Software: PyCharm
-
 import numpy as np
 import copy
 from operator import itemgetter
@@ -32,8 +26,10 @@ def evaluate_rollout(simulate_game_state, rollout_policy_fn, limit=1000):
         if end:
             break
         action_probs = rollout_policy_fn(game_state_copy)
+        # 蒙特卡洛本质是基于模拟 所以这里选出概率最高的步骤执行下一步
         max_action = max(action_probs, key=itemgetter(1))[0]
         game_state_copy.step(max_action)
+    # 如果超出了limit的执行限制，按照和棋结束
     else:
         winner = -1
     if winner == -1:  # 和棋
@@ -43,13 +39,15 @@ def evaluate_rollout(simulate_game_state, rollout_policy_fn, limit=1000):
 
 
 class TreeNode:
-    """蒙特卡洛树节点"""
+    """
+    蒙特卡洛树节点
+    """
     def __init__(self, parent, prior_p):
         self.parent = parent  # 节点的父节点
         self.children = {}  # 一个字典，用来存节点的子节点
         self.n_visits = 0  # 节点被访问的次数
         self.Q = 0  # 节点的平均行动价值
-        self.U = 0  # MCTS选择Q+U最大的节点，公式里的U
+        self.U = 0  # MCTS选择Q+U最大的节点，公式里的U 探索项
         self.P = prior_p  # 节点被选择的概率
 
     def select(self, c_puct):
@@ -91,7 +89,7 @@ class TreeNode:
 
     def update_recursive(self, leaf_value):
         """
-        跟心所有祖先的Q值及访问次数
+        更新所有祖先的Q值及访问次数
 
         :param leaf_value:
         :return:
@@ -194,6 +192,7 @@ class MCTS:
         act_probs = softmax(1.0 / temp * np.log(np.array(visits) + 1e-10))
         return acts, act_probs
 
+    # 蒙特卡洛算法本质上说传统模拟统计的延伸 多次模拟并且多次重复的位置
     def get_move(self, game, player=None):
         """
         执行n_playout次模拟，返回访问次数最多的动作

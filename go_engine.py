@@ -1,22 +1,19 @@
-# -*- coding: utf-8 -*-
-# @Time    : 2021/9/30 14:32
-# @Author  : He Ruizhi
-# @File    : go_engine.py
-# @Software: PyCharm
-
 from GymGo.gym_go import govars, gogame
 from typing import Union, List, Tuple
 import numpy as np
 from scipy import ndimage
 
+# 直接气位
 surround_struct = np.array([[0, 1, 0],
                             [1, 0, 1],
                             [0, 1, 0]])
 
+# 眼位
 eye_struct = np.array([[1, 1, 1],
                        [1, 0, 1],
                        [1, 1, 1]])
 
+# 斜角气位
 corner_struct = np.array([[1, 0, 1],
                           [0, 0, 0],
                           [1, 0, 1]])
@@ -57,7 +54,9 @@ class GoEngine:
 
         if state_format == "separated":
             record_step *= 2
+        # channel 记录多维的信息 例如 黑子的位置 白子的位置 某一回合的棋盘状态
         self.state_channels = record_step + 2 if record_last else record_step + 1
+        # zeros: 用于创建每个位置都为0的数组
         self.board_state = np.zeros((self.state_channels, board_size, board_size))
         self.done = False
 
@@ -79,6 +78,7 @@ class GoEngine:
         """
         assert not self.done
         if isinstance(action, tuple) or isinstance(action, list) or isinstance(action, np.ndarray):
+            # 判断落棋的位置是否位于棋盘的范围内
             assert 0 <= action[0] < self.board_size
             assert 0 <= action[1] < self.board_size
             action = self.board_size * action[0] + action[1]

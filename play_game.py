@@ -21,6 +21,6 @@ if __name__ == '__main__':
         # 落子
         game.take_action()
         # 音乐控制
-        game.music_control()
+        # game.music_control()
         # 屏幕刷新
         pygame.display.update()

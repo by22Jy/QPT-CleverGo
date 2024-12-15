@@ -44,6 +44,7 @@ def next_state(state, action1d, canonical=False):
     # Initialize basic variables
     board_shape = state.shape[1:]  # state.shape为(通道数, 棋盘高度, 棋盘宽度)
     pass_idx = np.prod(board_shape)  # np.prod()将参数内所有元素连乘，pass_idx："pass"对应的id
+    # 如果放置的位置 1d的纬度下已经大于了期盼的长宽乘积 那么视作跳过
     passed = action1d == pass_idx  # 如果action id等于pass_idx，则passed为True
     action2d = action1d // board_shape[0], action1d % board_shape[1]  # 将action1d转换成action2d
 
@@ -227,6 +228,7 @@ def game_ended(state):
     :return: 0/1 = game not ended / game ended respectively
     """
     m, n = state.shape[1:]
+    # 结束层纬度的二维数组全为1的数量是否已经铺满
     return int(np.count_nonzero(state[govars.DONE_CHNL] == 1) == m * n)
 
 
@@ -238,6 +240,7 @@ def batch_game_ended(batch_state):
     return np.max(batch_state[:, govars.DONE_CHNL], axis=(1, 2))
 
 
+# 面积差 + 贴目数 判定哪方胜利
 def winning(state, komi=0):
     black_area, white_area = areas(state)
     area_difference = black_area - white_area

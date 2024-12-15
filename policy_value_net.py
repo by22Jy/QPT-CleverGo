@@ -1,13 +1,8 @@
-# -*- coding: utf-8 -*-
-# @Time    : 2021/3/29 21:01
-# @Author  : He Ruizhi
-# @File    : policy_value_net.py
-# @Software: PyCharm
-
 import numpy as np
 import paddle
 
 
+# 基于 PaddlePaddle 的神经网络模型
 class PolicyValueNet(paddle.nn.Layer):
     def __init__(self, input_channels: int = 10,
                  board_size: int = 9):

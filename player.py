@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-# @Time    : 2021/3/8 18:51
-# @Author  : He Ruizhi
-# @File    : player.py
-# @Software: PyCharm
-
 from threading import Thread
 import numpy as np
 from time import sleep
@@ -65,6 +59,7 @@ class RandomPlayer(Player):
         return action
 
 
+# 蒙特卡洛模型
 class MCTSPlayer(Player):
     def __init__(self, c_puct=5, n_playout=20):
         super().__init__()
@@ -103,6 +98,7 @@ class MCTSPlayer(Player):
         return move
 
 
+# 使用 MCTS 进行决策，结合策略网络和价值网络，通过模拟多个可能的未来局面来选择最优动作。适用于自对弈和与对手对弈。
 class AlphaGoPlayer(Player):
     def __init__(self, model_path='models/pdparams', c_puct=5, n_playout=400, is_selfplay=False):
         super(AlphaGoPlayer, self).__init__()
@@ -153,6 +149,7 @@ class AlphaGoPlayer(Player):
             return move
 
 
+# 仅使用策略网络生成动作概率分布，根据概率分布选择动作。适用于快速决策。
 class PolicyNetPlayer(Player):
     def __init__(self, model_path='models/model.pdparams'):
         super(PolicyNetPlayer, self).__init__()
@@ -183,6 +180,7 @@ class PolicyNetPlayer(Player):
         return action
 
 
+# 仅使用价值网络评估每个合法动作后的局面价值，选择使对手局面价值最小的动作。适用于评估局面价值。
 class ValueNetPlayer(Player):
     def __init__(self, model_path='models/model.pdparams'):
         super(ValueNetPlayer, self).__init__()
